@@ -1,5 +1,5 @@
 # TP3 (C++) - Makefile
-# @author Constantin FLEURY
+# @author const39
 
 CMD:= g++
 BIN := bin

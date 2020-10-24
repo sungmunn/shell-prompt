@@ -1,3 +1,7 @@
+/**
+ * main
+ * @author const39
+ */
 #include "Color.hpp"
 
 #include <unistd.h>
@@ -7,6 +11,7 @@
 
 using namespace std;
 
+// Preset gradients
 vector<string> gradients = {"#b82929",
                             "#b0004b",
                             "#97086a",
@@ -19,6 +24,12 @@ vector<string> gradients = {"#b82929",
                             "#860136",
                             "#b82929"};
 
+/**
+ * Split a string in a vector of substrings delimited by a character.
+ * @param str the string to split
+ * @param delim the delimiter
+ * @return a vector containing all substrings
+ */
 vector<string> explode(string str, char delim)
 {
     vector<string> result;
@@ -30,37 +41,47 @@ vector<string> explode(string str, char delim)
     return result;
 }
 
+/**
+ * Compute a string with color formatting using ANSI color codes.
+ * @param name the text to color
+ * @param font the text color
+ * @param back the background color
+ * @param fontTri the ending triangle color
+ * @param backTri the ending triangle background color
+ * @return a string with color formatting using ANSI color codes
+ */  
 string buildName(string name, Color &font, Color &back, Color &fontTri, Color &backTri)
 {
-    Color offBack(Color::F_Background);
-    Color offFront(Color::F_Bold);
+    Color offBack(Color::F_Background); // Transparent background color
+    Color offFront(Color::F_Bold);      // Transparent text color
     string tri = "";
     return back.toString() + font.toString() + " " + name + " " + offBack.toString() + offFront.toString() + backTri.toString() + fontTri.toString() + tri + offBack.toString() + offFront.toString();
 }
 
 int main()
 {
-    string path = get_current_dir_name();
-    vector<string> splittedPath = explode(path, '/');
-    splittedPath.at(0) = "/";
+    string path = get_current_dir_name();       // Get current working dir
+    vector<string> splittedPath = explode(path, '/');   // Split the string in a vector
+    splittedPath.at(0) = "/";   // Place '/' (root) as the first element
 
-    Color front("#FFFFFF", Color::F_Bold);
+    Color front("#FFFFFF", Color::F_Bold);  // Text color
 
-    for (size_t i = 0; i < splittedPath.size(); i++)
+    for (size_t i = 0; i < splittedPath.size(); i++)    // Loop on all elements of the path vector
     {
         string elem = splittedPath.at(i);
 
-        Color frontTri(gradients[i], Color::F_Bold);
-        Color back(gradients[i], Color::F_Background);
+        Color frontTri(gradients[i], Color::F_Bold);    // Triangle color
+        Color back(gradients[i], Color::F_Background);  // Text background color
 
+        // Triangle background color : transparent if it's the last or equal to the next element color otherwise
         Color *backTri = NULL;
         if (i == splittedPath.size() - 1)
             backTri = new Color(Color::F_Background);
         else
             backTri = new Color(gradients[i + 1], Color::F_Background);
         
-        cout << buildName(elem, front, back, frontTri, *backTri);
+        cout << buildName(elem, front, back, frontTri, *backTri);   // Print the formatted text on the standard output
         delete backTri;
     }
-    cout << " ";
+    cout << " ";    // Ending margin
 }
