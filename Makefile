@@ -3,26 +3,27 @@
 
 CMD:= g++
 BIN := bin
+EXEC := shell_prompt
 
 COLOR := Color
 PARSER := Parser
 
-all: main
+all: main clear
 
 main: color parser
-	$(CMD) -o $(BIN)/exec $(BIN)/$(COLOR).o $(BIN)/$(PARSER).o Main.cpp
+	$(CMD) -o $(EXEC) $(COLOR).o $(PARSER).o Main.cpp
 
-color: $(COLOR).hpp $(COLOR).cpp mkdir
-	$(CMD) -c -o $(BIN)/$(COLOR).o $(COLOR).cpp
+color: $(COLOR).hpp $(COLOR).cpp
+	$(CMD) -c -o $(COLOR).o $(COLOR).cpp
 
-parser: $(PARSER).hpp $(PARSER).cpp mkdir
-	$(CMD) -c -o $(BIN)/$(PARSER).o $(PARSER).cpp
+parser: $(PARSER).hpp $(PARSER).cpp
+	$(CMD) -c -o $(PARSER).o $(PARSER).cpp
 
 # $(BIN)/%.o: %.cpp $(BIN)
 #  	$(CMD) -c -o $(BIN)/$(COLOR).o $(COLOR).cpp
 
-mkdir:
-	mkdir -p $(BIN)
+# mkdir:
+# 	mkdir -p $(BIN)
 
-clean	:
+clear:
 	rm -f *.o
