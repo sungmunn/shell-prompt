@@ -12,7 +12,7 @@ using namespace std;
 class Color
 {
 public:
-    static const int F_Bold;        // Preset for bold color
+    static const int F_Foreground;  // Preset for foreground color
     static const int F_Background;  // Preset for background color
 
 private:

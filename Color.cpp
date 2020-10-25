@@ -9,7 +9,7 @@
 
 using namespace std;
 
-const int Color::F_Bold = 0;
+const int Color::F_Foreground = 0;
 const int Color::F_Background = 1;
 
 /**

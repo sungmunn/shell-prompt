@@ -12,45 +12,30 @@
 
 using namespace std;
 
-// Preset gradients
-vector<string> gradients = {"#b82929",
-                            "#b0004b",
-                            "#97086a",
-                            "#cf6e00",
-                            "#36e25c",
-                            "#00b5b8",
-                            "#247ba5",
-                            "#48437a",
-                            "#4c0031",
-                            "#860136",
-                            "#b82929"};
-
-
-
 /**
  * Compute a string with color formatting using ANSI color codes.
  * @param name the text to color
- * @param font the text color
+ * @param text the text color
  * @param back the background color
- * @param fontTri the ending triangle color
+ * @param textTri the ending triangle color
  * @param backTri the ending triangle background color
  * @return a string with color formatting using ANSI color codes
- */  
-string buildName(string name, Color &font, Color &back, Color &fontTri, Color &backTri)
+ */
+string buildName(string name, Color &text, Color &back, Color &textTri, Color &backTri)
 {
-    Color offBack(Color::F_Background); // Transparent background color
-    Color offFront(Color::F_Bold);      // Transparent text color
+    Color offBack(Color::F_Background);  // Transparent background color
+    Color offFront(Color::F_Foreground); // Transparent text color
     string tri = "";
-    return back.toString() + font.toString() + " " + name + " " + offBack.toString() + offFront.toString() + backTri.toString() + fontTri.toString() + tri + offBack.toString() + offFront.toString();
+    return back.toString() + text.toString() + " " + name + " " + offBack.toString() + offFront.toString() + backTri.toString() + textTri.toString() + tri + offBack.toString() + offFront.toString();
 }
 
-int main()
+string readConfigFile(string filename)
 {
-
     string text;
     fstream file;
     file.open("settings.conf", ios::in);
-    if(file.is_open()) {
+    if (file.is_open())
+    {
         string line;
         while (getline(file, line))
         {
@@ -58,54 +43,47 @@ int main()
         }
         file.close();
     }
+    return text;
+}
+
+int main()
+{
+    string text = readConfigFile("settings.conf");
 
     Parser parser(text);
-    string val = parser.parseString("bold");
-    cout << "bold=" << val << endl; 
-    
-    vector<string> vals = parser.parseArrayAsStrings("frontground");
-    for (size_t i = 0; i < vals.size(); i++)
+    // string useTrueColor = parser.parseString("truecolor");
+    vector<string> textColors = parser.parseArrayAsStrings("foreground");
+    vector<string> backColors = parser.parseArrayAsStrings("background");
+
+    string path = get_current_dir_name(); // Get current working dir
+    Parser pathParser(path);
+    vector<string> splittedPath = pathParser.explode('/'); // Split the string in a vector
+    splittedPath.at(0) = "/";                              // Place '/' (root) as the first element
+
+    for (size_t pathIndex = 0, textColorIndex = 0, backColorIndex = 0; pathIndex < splittedPath.size(); pathIndex++, textColorIndex++, backColorIndex++) // Loop on all elements of the path vector
     {
-        cout << vals[i] << endl; 
+        string elem = splittedPath.at(pathIndex);
+
+        Color text(textColors[textColorIndex], Color::F_Foreground);      // Text color
+        Color textTri(backColors[backColorIndex], Color::F_Foreground);   // Triangle color
+        Color back(backColors[backColorIndex], Color::F_Background); // Text background color
+
+        // Triangle background color : transparent if it's the last or equal to the next element color otherwise
+        Color *backTri = NULL;
+        if (pathIndex == splittedPath.size() - 1)
+            backTri = new Color(Color::F_Background);
+        else
+            backTri = new Color(backColors[backColorIndex + 1 == backColors.size() ? 0 : backColorIndex + 1], Color::F_Background);
+
+        cout << buildName(elem, text, back, textTri, *backTri); // Print the formatted text on the standard output
+
+        if (textColorIndex + 1 >= textColors.size())
+            textColorIndex = -1;
+
+        if (backColorIndex + 1 >= backColors.size())
+            backColorIndex = -1;
+
+        delete backTri;
     }
-    
-    cout << endl;
-    vals = parser.parseArrayAsStrings("background");
-    for (size_t i = 0; i < vals.size(); i++)
-    {
-        cout << vals[i] << endl; 
-    }
-    
-
-
-
-
-
-
-
-
-    // string path = get_current_dir_name();       // Get current working dir
-    // vector<string> splittedPath = explode(path, '/');   // Split the string in a vector
-    // splittedPath.at(0) = "/";   // Place '/' (root) as the first element
-
-    // Color front("#FFFFFF", Color::F_Bold);  // Text color
-
-    // for (size_t i = 0; i < splittedPath.size(); i++)    // Loop on all elements of the path vector
-    // {
-    //     string elem = splittedPath.at(i);
-
-    //     Color frontTri(gradients[i], Color::F_Bold);    // Triangle color
-    //     Color back(gradients[i], Color::F_Background);  // Text background color
-
-    //     // Triangle background color : transparent if it's the last or equal to the next element color otherwise
-    //     Color *backTri = NULL;
-    //     if (i == splittedPath.size() - 1)
-    //         backTri = new Color(Color::F_Background);
-    //     else
-    //         backTri = new Color(gradients[i + 1], Color::F_Background);
-        
-    //     cout << buildName(elem, front, back, frontTri, *backTri);   // Print the formatted text on the standard output
-    //     delete backTri;
-    // }
-    // cout << " ";    // Ending margin
+    cout << " "; // Ending margin
 }
