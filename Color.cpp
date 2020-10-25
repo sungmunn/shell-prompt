@@ -11,8 +11,8 @@ using namespace std;
 
 /**
  * Initialise the color by converting the given hex code to the chosen representation.
- * @param hex the hexadecimal code that will be converted to a 256 bits color code
- * @param useTrueColor indicates if the color coding is Truecolors or not. In the case it is not, a 256-bits color code will be used.
+ * @param hex the hexadecimal code that will be converted to a 8 bits color code (256 colors)
+ * @param useTrueColor indicates if the color coding is Truecolors or not. In the case it is not, a 8-bits color code will be used.
  * Truecolors use 24 bits to describe the colors. Allows to produce much more variety of colors but it more recent and as such not likely to be supported on older terminals.
  * Whereas 256Colors use 8 bits to describe the colors. Colors are not as detailed as with Truecolors but this encoding is older and supported by older terminals.
  * @param isBackground indicates if the color will be used as background or foreground.
@@ -43,9 +43,9 @@ Color::Color(bool isBackground)
 }
 
 /**
- * Convert a hexadecimal code color to a 256-bits representation.
+ * Convert a hexadecimal code color to a 8 bits representation.
  * @param value the hex color code. No verification is done on the given hex code. The function behavior is not defined if the given string is not a valid 6 digits hex code.
- * @return a string containing a 256-bits color code.
+ * @return a string containing a 8 bits color code.
  * @see https://tintin.mudhalla.net/info/256color/
  */
 string Color::hexTo256(string value)

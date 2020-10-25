@@ -13,7 +13,7 @@ class Color
 {
 private:
     const string OFF = "\033[0m";   // Private preset for no-color
-    string m_color;     // Color converted to 256 bits
+    string m_color;     // Color converted to encoded string
     bool m_useTrueColors; // Indicate which color coding to use 
     bool m_isBackground;  // Indicate if the color is fore or background
     string hexTo256(string value);
