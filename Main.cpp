@@ -23,8 +23,8 @@ using namespace std;
  */
 string buildName(string name, Color &text, Color &back, Color &textTri, Color &backTri)
 {
-    Color offBack(Color::F_Background);  // Transparent background color
-    Color offFront(Color::F_Foreground); // Transparent text color
+    Color offBack(true);  // Transparent background color
+    Color offFront(false); // Transparent text color
     string tri = "";
     return back.toString() + text.toString() + " " + name + " " + offBack.toString() + offFront.toString() + backTri.toString() + textTri.toString() + tri + offBack.toString() + offFront.toString();
 }
@@ -57,7 +57,8 @@ int main()
     string text = readConfigFile("settings.conf");
 
     Parser parser(text);
-    // string useTrueColor = parser.parseString("truecolor");
+    string useTrueColorStr = parser.parseString("truecolor");
+    bool useTrueColor = useTrueColorStr == "true" ? true : false;
     vector<string> textColors = parser.parseArrayAsStrings("foreground");
     vector<string> backColors = parser.parseArrayAsStrings("background");
 
@@ -71,16 +72,16 @@ int main()
     {
         string elem = splittedPath.at(pathIndex);
 
-        Color text(textColors[textColorIndex], Color::F_Foreground);      // Text color
-        Color textTri(backColors[backColorIndex], Color::F_Foreground);   // Triangle color
-        Color back(backColors[backColorIndex], Color::F_Background); // Text background color
+        Color text(textColors[textColorIndex], useTrueColor, false);      // Text color
+        Color textTri(backColors[backColorIndex], useTrueColor, false);   // Triangle color
+        Color back(backColors[backColorIndex], useTrueColor, true); // Text background color
 
         // Triangle background color : transparent if it's the last or equal to the next element color otherwise
         Color *backTri = NULL;
         if (pathIndex == splittedPath.size() - 1)
-            backTri = new Color(Color::F_Background);
+            backTri = new Color(true);
         else
-            backTri = new Color(backColors[backColorIndex + 1 == backColors.size() ? 0 : backColorIndex + 1], Color::F_Background);
+            backTri = new Color(backColors[backColorIndex + 1 == backColors.size() ? 0 : backColorIndex + 1], useTrueColor, true);
 
         cout << buildName(elem, text, back, textTri, *backTri); // Print the formatted text on the standard output
 

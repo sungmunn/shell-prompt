@@ -11,18 +11,16 @@ using namespace std;
  */
 class Color
 {
-public:
-    static const int F_Foreground;  // Preset for foreground color
-    static const int F_Background;  // Preset for background color
-
 private:
     const string OFF = "\033[0m";   // Private preset for no-color
     string m_color;     // Color converted to 256 bits
-    int m_format;       // Value of the format (will be compared to the presets)
+    bool m_useTrueColors; // Indicate which color coding to use 
+    bool m_isBackground;  // Indicate if the color is fore or background
     string hexTo256(string value);
+    string hexToRGB(string value);
 
 public:
-    Color(string hex, int f);   
-    Color(int f);
+    Color(string hex, bool useTrueColors, bool isBackground);
+    Color(bool isBackground);
     string toString();
 };
