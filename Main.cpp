@@ -29,6 +29,11 @@ string buildName(string name, Color &text, Color &back, Color &textTri, Color &b
     return back.toString() + text.toString() + " " + name + " " + offBack.toString() + offFront.toString() + backTri.toString() + textTri.toString() + tri + offBack.toString() + offFront.toString();
 }
 
+/**
+ * Read the configuration file.
+ * @param filename the filename
+ * @return the content of the file
+ */
 string readConfigFile(string filename)
 {
     string text;
@@ -48,6 +53,7 @@ string readConfigFile(string filename)
 
 int main()
 {
+    /* Settings */
     string text = readConfigFile("settings.conf");
 
     Parser parser(text);
@@ -55,6 +61,7 @@ int main()
     vector<string> textColors = parser.parseArrayAsStrings("foreground");
     vector<string> backColors = parser.parseArrayAsStrings("background");
 
+    /* Retrieve current path */
     string path = get_current_dir_name(); // Get current working dir
     Parser pathParser(path);
     vector<string> splittedPath = pathParser.explode('/'); // Split the string in a vector

@@ -11,8 +11,8 @@ using namespace std;
 class Parser
 {
 private:
-    string m_text;
-    vector<string> m_lines;
+    string m_text;              // the text to parse
+    vector<string> m_lines;     // each text line
     vector<string> splitLines();
 
 public:
